@@ -14,9 +14,9 @@ nPeoplePerCond = 10
 condition_names = ["C1", "C2", "C3"] 
 
 # path  where the allocation overview csv file is stored:
-file_path = "/Users/majaguseva/Desktop/CodingProjects/conditionAssignmentAlgo/output/" 
+file_path = "/Users/majaguseva/Desktop/CodingProjects/conditionAssignmentAlgo/balanced-group-assignment/output/" 
 ####################################################################################
-
+# Author: Maja Guseva (2023)
 
 
 def main():    
@@ -188,7 +188,7 @@ def updateTable(runningAllocation, sex, age, participantId, condition):
 def saveTable(runningAllocation, condition, participantId, file_path):
     """ Saves updated runningAllocation dataframe in file_path """
 
-    writetoFile = input("Write condition " + condition + "for participant  " + str(participantId) + " to file? y/n")
+    writetoFile = input("Write condition " + condition + " for participant " + str(participantId) + " to file? y/n")
     if writetoFile == "y":
         runningAllocation.to_csv(file_path + "runningAllocation.csv")
         print("Condition assignment tables have been updated.")
