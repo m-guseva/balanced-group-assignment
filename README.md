@@ -9,6 +9,7 @@ In the head of the code you need to choose the number of people you need in each
 
 
 ## How it works:
+run the python script with $python3 conditionAssignment.py in terminal.
 1. In the beginning the script initialises an empty dataframe  `runningallocation` where the upcoming participants' attributes (sex, age, participantId) and assigned group will documented. This is saved under `runningAllocation.csv`.
 2. The dataframe is read from `file_path`.
 3. In the terminal the user is asked to enter the participantId (could be anything), the age (in years) and sex (m/f/d). Please note: For now I arbitrarily chose to display an error if the age is >100 (in case the user made a mistake) but this can be easily modified. Regarding the sex variable, if "d" (=diverse) is chosen, the script randomizes between "m" and "f". This can be easily modified as that was an arbitrary (and arguably controversial) choice as well. Pressing anything other than "m", "f" or "d" aborts the script.
@@ -19,7 +20,7 @@ In the head of the code you need to choose the number of people you need in each
 
 ## Adaptive Stratified Sampling Method (Minimization)
 
-This is based on a stratified sampling method, see [here](https://en.wikipedia.org/wiki/Minimisation_(clinical_trials)). 
+This procedure is based on a stratified sampling method, see [here](https://en.wikipedia.org/wiki/Minimisation_(clinical_trials)). 
 After observing a person's attributes of interest, we construct a measure of imbalance for each attribute and each group.
 - For the first balancing attribute **sex** (which is a categorical/nominal variable) the imbalance measure is simply the count of participants with the same sex in each group. E.g. participant-to-be-allocated is female, the number of females in group 1 is 5, in group 2 is 3 and in group 3 is 1, so the imbalance measures are [5, 3, 1].
 - For the other balancing attribute **age** (which is a continuous/ratio scaled variable) the imbalance measure requires more steps. For each group we create a hypothetical scenario. We add the person in question whose age is some number x to a given group and calculate the mean for <u>every</u> group. Then we check what the distance between the group means would be in this scenario. The distance is calculated as the range between the group means, i.e. highest mean age - lowest mean age. The range is then used as an imbalance measure. This procedure of creating hypothetical scenarios is repeated for every group, so that we end up with one imbalance measure for every group.

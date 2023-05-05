@@ -5,21 +5,49 @@ import numpy as np
 import os
 
 ####################################################################################
-######## These variables should be changed to fit the specific experiment  #########
+########################## Simulation of group allocation ##########################
 ####################################################################################
+'''
+This script simulates a condition allocation by running the whole script in a loop. Instead of
+retrieving the participant attributes from the user input dialogue in the terminal this script simulates values (see below). 
+You can adjust the parameters to create your desired population, e.g. by selecting whether you expect an
+imbalanced sex ratio (which is often the case in psychology experiments as more women participate).
+
+Author: Maja Guseva (2023)
+'''
 # maximum number of people per condition:
-nPeoplePerCond = 30
+nPeoplePerCond = 10
 
 # list of condition names:
 condition_names = ["C1", "C2", "C3"] 
 
+n_conditions = len(condition_names)
+
 # path where the allocation overview csv file is stored (don't forget the "/" at the end of the path)
 file_path = "INSERT_YOUR_PATH_.../balanced-group-assignment/output/" 
-####################################################################################
-# Author: Maja Guseva (2023)
 
+####################################################################################
+###### The following parameters can be changed to create different distributions
+
+#Simulate different sex distribution populations (comment out the one you are not interested in)
+#Equal sex ratio:
+population = ['m','f']
+# OR More f than m (3:1):
+population = ['m','f','f','f']
+
+#Simulate different age distribution depending on gender (values are exemplary, choose your own)
+meanF = 26
+meanM = 22
+stdF = 4
+stdM = 4
+agef = np.round(np.random.normal(meanF,stdF,nPeoplePerCond*n_conditions))
+agem = np.round(np.random.normal(meanM,stdM,nPeoplePerCond*n_conditions))
+
+####################################################################################
 
 def main():    
+     
+    print('iteration' + str(step))
     
     # Inititalize table at the start
     if os.path.exists(file_path + "runningAllocation.csv") == False:
@@ -28,8 +56,14 @@ def main():
     # Read file and retrieve table
     runningAllocation  = readFile(file_path)
 
-    # Get participant's attributes via text input in terminal
-    participantId, sex, age = getParticipantInfo()
+    
+    # Instead of retrieving participant information via input in terminal, we simulate participant attributes
+    participantId = step + 1
+    sex = random.choice(population)
+    if sex == 'f':
+        age = random.choice(agef)
+    elif sex == 'm':
+        age = random.choice(agem)
    
     # Select condition based on participantInfo
     condition, _ = conditionSelection(runningAllocation, condition_names, nPeoplePerCond, sex, age, participantId)
@@ -38,7 +72,7 @@ def main():
     runningAllocation =  updateTable(runningAllocation, sex, age, participantId, condition)
 
     # Save new table
-    saveTable(runningAllocation, condition, participantId, file_path)
+    saveTable(runningAllocation, file_path)
 
     # Print overview over sample
     printInfo(runningAllocation, condition_names)
@@ -68,9 +102,12 @@ def readFile(file_path):
     runningAllocation = pd.read_csv(file_path +"runningAllocation.csv", index_col = 0)
     return runningAllocation
 
-
 def getParticipantInfo(): 
-    """ Dialog input box in terminal to set the participant's attributes """
+    """
+    Dialog input box in terminal to set the participant's attributes
+    THIS FUNCTION IS NOT CALLED IN THIS SIMULATION SCRIPT BECAUSE
+    WE USE SIMULATED VALUES!!
+    """
     
     participantId = input("ParticipantId: ")
 
@@ -82,7 +119,6 @@ def getParticipantInfo():
         sex  = random.choice(["m", "f"])
     else:
         sex = sexInput
-
 
     age = int(input("Age (in years): ")) 
     if age > 100 :
@@ -184,15 +220,10 @@ def updateTable(runningAllocation, sex, age, participantId, condition):
     return runningAllocation
 
 
-def saveTable(runningAllocation, condition, participantId, file_path):
+def saveTable(runningAllocation, file_path):
     """ Saves updated runningAllocation dataframe in file_path """
+    runningAllocation.to_csv(file_path + "runningAllocation.csv")
 
-    writetoFile = input("Write condition " + condition + " for participant " + str(participantId) + " to file? y/n")
-    if writetoFile == "y":
-        runningAllocation.to_csv(file_path + "runningAllocation.csv")
-        print("Condition assignment tables have been updated.")
-    else:
-        print("Conditions assignment has been aborted.")
     return
 
 
@@ -223,4 +254,5 @@ def printInfo(runningAllocation, condition_names):
 
         
 if __name__ == "__main__":
-     main() 
+    for step in range(nPeoplePerCond*n_conditions):
+        main() 
