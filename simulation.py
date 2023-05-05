@@ -50,7 +50,7 @@ def main():
     print('iteration' + str(step))
     
     # Inititalize table at the start
-    if os.path.exists(file_path + "runningAllocation.csv") == False:
+    if os.path.exists(file_path + "sim_runningAllocation.csv") == False:
         runningAllocation = initTable(condition_names, file_path)
 
     # Read file and retrieve table
@@ -92,14 +92,14 @@ def initTable(condition_names, file_path):
     **{name: [0] for name in condition_names}})
     
     #Save everything as csv:
-    runningAllocation.to_csv(file_path + "runningAllocation.csv")
+    runningAllocation.to_csv(file_path + "sim_runningAllocation.csv")
     return runningAllocation
 
 
 def readFile(file_path): 
     """ Reads csv file in file_path  where runningAllocation is stored """
 
-    runningAllocation = pd.read_csv(file_path +"runningAllocation.csv", index_col = 0)
+    runningAllocation = pd.read_csv(file_path +"sim_runningAllocation.csv", index_col = 0)
     return runningAllocation
 
 def getParticipantInfo(): 
@@ -222,7 +222,7 @@ def updateTable(runningAllocation, sex, age, participantId, condition):
 
 def saveTable(runningAllocation, file_path):
     """ Saves updated runningAllocation dataframe in file_path """
-    runningAllocation.to_csv(file_path + "runningAllocation.csv")
+    runningAllocation.to_csv(file_path + "sim_runningAllocation.csv")
 
     return
 
